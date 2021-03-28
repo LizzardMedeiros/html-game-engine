@@ -1,4 +1,4 @@
-# HTML-Engine
+# HTML-GameEngine
 ### Uma game engine completa baseada em CSS/HTML
 
 ---
@@ -6,7 +6,7 @@
 ## O Projeto
 ![thumb](./demo.png)
 
-HTML-Engine é um pequeno projeto inspirado no [Danger Crew](#https://www.youtube.com/watch?v=nHaiLWUaWWw). Meu único propósito é divertir codando hahaha :smile:
+HTML-GameEngine é um pequeno projeto inspirado no [Danger Crew](#https://www.youtube.com/watch?v=nHaiLWUaWWw). Meu único propósito é divertir codando hahaha :smile:
 
 ## Como Funciona?
 
