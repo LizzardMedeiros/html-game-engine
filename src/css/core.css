@@ -1,0 +1,65 @@
+:root {
+  --pixel-size: 4;
+}
+
+body {
+  background-color: darkcyan;
+  overflow: hidden;
+}
+
+body, #room {
+  margin: 0;
+  padding: 0;
+}
+
+#room {
+  position: absolute;
+}
+
+#player {
+  position: absolute;
+  top: calc(50% - calc(16px * var(--pixel-size)));
+  left: calc(50% - calc(16px * var(--pixel-size)));
+  z-index: 10;
+}
+
+.map-cell {
+  background-color: royalblue;
+  height: calc(16px * var(--pixel-size));
+  image-rendering: pixelated;
+  overflow: hidden;
+  position: absolute;
+  width: calc(16px * var(--pixel-size));
+}
+
+.animated-spritesheet {
+  width: calc(32px * var(--pixel-size));
+  height: calc(32px * var(--pixel-size));
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-spritesheet .spritesheet {
+  width: calc(128px * var(--pixel-size));
+  height: calc(128px * var(--pixel-size));
+  image-rendering: pixelated;
+  position: absolute;
+}
+
+.animated-spritesheet .run {
+  animation: anim-sprites .5s steps(4) infinite;
+}
+
+.animated-spritesheet .idle {
+  left: 0;
+}
+
+@keyframes anim-sprites {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-100%, 0);
+  }
+}
+
