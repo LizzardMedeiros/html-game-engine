@@ -3,7 +3,7 @@
 }
 
 body {
-  background-color: darkcyan;
+  background-color: black;
   overflow: hidden;
 }
 
@@ -24,6 +24,7 @@ body, #room {
 }
 
 .map-cell {
+  border: 1px solid gray;
   background-color: royalblue;
   height: calc(16px * var(--pixel-size));
   image-rendering: pixelated;
@@ -33,15 +34,15 @@ body, #room {
 }
 
 .animated-spritesheet {
-  width: calc(32px * var(--pixel-size));
-  height: calc(32px * var(--pixel-size));
+  width: 64px;
+  height: 64px;
   position: relative;
   overflow: hidden;
 }
 
 .animated-spritesheet .spritesheet {
-  width: calc(128px * var(--pixel-size));
-  height: calc(128px * var(--pixel-size));
+  width: calc(64px * var(--pixel-size));
+  height: calc(64px * var(--pixel-size));
   image-rendering: pixelated;
   position: absolute;
 }

@@ -15,20 +15,21 @@ export default (CONFIGS) => (assets) => {
     // Textures
     cellTexture.src = mapTexture;
     cellTexture.style.position = 'absolute';
-    cellTexture.width *= CONFIGS.pixelSize;
-    cellTexture.style.top = `-${CONFIGS.pixelSize * mapData.cellSize * c[0]}px`;
-    cellTexture.style.left = `-${CONFIGS.pixelSize * mapData.cellSize * c[1]}px`;
+    cellTexture.width *= CONFIGS.zoom;
+    cellTexture.style.left = `-${CONFIGS.zoom * mapData.cellSize * c[0]}px`;
+    cellTexture.style.top = `-${CONFIGS.zoom * mapData.cellSize * c[1]}px`;
     cellTexture.style.zIndex = c[2];
     cell.appendChild(cellTexture);
 
     // Cells
-    cell.className = 'map-cell';
+    cell.classList.add('map-cell');
+    if (c[3] === CONFIGS.tilesetEventCode.collision) cell.classList.add('block');
     const xx = i % Math.sqrt(mapData.brush.length);
     const yy = Math.floor(i / Math.sqrt(mapData.brush.length));
-    cell.style.left = `${CONFIGS.pixelSize * mapData.cellSize * xx}px`;
-    cell.style.top = `${CONFIGS.pixelSize * mapData.cellSize * yy}px`;
+    cell.style.left = `${CONFIGS.zoom * mapData.cellSize * xx}px`;
+    cell.style.top = `${CONFIGS.zoom * mapData.cellSize * yy}px`;
     room.appendChild(cell);
   });
 
-  return room;
+  return mapData;
 }

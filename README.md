@@ -19,7 +19,7 @@ Exemplo do código de implementação do tutorial:
   <!-- Estabelece mapa do jogo -->
   <div id="world" data-source="map00">
     <!-- Implementa o jogador -->
-    <div id="player" class="actor">
+    <div id="player" class="actor" data-startat="1;1">
       <div class="animated-spritesheet">
         <img
           class="spritesheet idle"
@@ -55,9 +55,9 @@ export default {
   // Tamanho da célula
   cellSize: 16, // in Pixels
   // Mapeamento da textura (precisa ser um quadrado)
-  brush: [ // x, y, z-index
-    [5, 0, 0],[5, 1, 0],
-    [5, 1, 0],[5, 1, 0],
+  brush: [ // x, y, z-index, type
+    [5, 0, 0, 0],[5, 1, 0, 0],
+    [5, 1, 0, 1],[5, 1, 0, 0],
   ],
 }
 ```
