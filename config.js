@@ -1,5 +1,6 @@
 export default {
   fps: 60,
+  debugMode: true, // Show grids
   walkSpeed: 4, // Pixels per seconds
   zoom: 4,
   tilesetEventCode: { // Tileset configuration events code

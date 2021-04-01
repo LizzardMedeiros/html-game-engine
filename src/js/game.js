@@ -2,126 +2,126 @@ const cssPlayer = '#player';
 const cssPlayerSprite = '#player .animated-spritesheet .spritesheet';
 const cssRoom = '#room';
 const cssCollisionMap = '.block';
-let movement = 'idle';
+
+const cssToNumber = (css) => {
+  return Number(css.replace('px', ''))
+}
+
+const getCoordGrid = (room) => {
+  const gridSize = room.getAttribute('grid-size');
+  return [
+    -cssToNumber(room.style.marginLeft) / gridSize,
+    -cssToNumber(room.style.marginTop) / gridSize,
+  ];
+};
+
+// -------------------------------------------------------------
+
+const movements = {
+  speed: 8,
+  mapCollision: [],
+  up: function(room) {
+    const [xx, yy] = getCoordGrid(room);
+    if (this.mapCollision.includes(`${xx};${yy - 1}`)) return;
+    room.style.marginTop = `${cssToNumber(room.style.marginTop) + this.speed}px`;
+  },
+  down: function(room) {
+    const [xx, yy] = getCoordGrid(room);
+    if (this.mapCollision.includes(`${xx};${yy + 1}`)) return;
+    room.style.marginTop = `${cssToNumber(room.style.marginTop) - this.speed}px`;
+  },
+  right: function(room) {
+    const [xx, yy] = getCoordGrid(room);
+    if (this.mapCollision.includes(`${xx + 1};${yy}`)) return;
+    room.style.marginLeft = `${cssToNumber(room.style.marginLeft) - this.speed}px`;
+  },
+  left: function(room) {
+    const [xx, yy] = getCoordGrid(room);
+    if (this.mapCollision.includes(`${xx - 1};${yy}`)) return;
+    room.style.marginLeft = `${cssToNumber(room.style.marginLeft) + this.speed}px`;
+  },
+}
+
+const initializeViewPort = ({ room, playerElement }) => {
+  const gridSize = room.getAttribute('grid-size');
+  const [px, py] = playerElement.getAttribute('data-home').split(';');
+  room.style.marginLeft = `-${px * gridSize}px`;
+  room.style.marginTop = `-${py * gridSize}px`;
+};
+
+const initializeMapCollision = (room) => {
+  const gridSize = room.getAttribute('grid-size');
+  document
+    .querySelectorAll(cssCollisionMap)
+    .forEach(element => {
+      const xx = cssToNumber(element?.style.left) / gridSize;
+      const yy = cssToNumber(element?.style.top) / gridSize;
+      movements.mapCollision.push(`${xx};${yy}`);
+    });
+}
+
+const isOnTheGrid = (room) => {
+  const gridSize = room.getAttribute('grid-size');
+  const { marginLeft = '0px', marginTop = '0px'} = room.style;
+  return !(cssToNumber(marginLeft) % gridSize)
+      && !(cssToNumber(marginTop) % gridSize);
+}
 
 export default (CONFIG) => (mapData) => {
 
-  const playerElement = document.querySelector(cssPlayer);
   const sprite = document.querySelector(cssPlayerSprite);
+  const playerElement = document.querySelector(cssPlayer);
   const room = document.querySelector(cssRoom);
-  const collisionMap = [];
-  const gridSize = (mapData.cellSize * CONFIG.zoom);
-
-  const toGrid = (value) => {
-    return Math.floor(value / gridSize);
-  }
-
-  document.querySelectorAll(cssCollisionMap).forEach((el) => {
-    const xx = toGrid(Number(el.style.left.replace('px', '')));
-    const yy = toGrid(Number(el.style.top.replace('px', '')));
-    collisionMap.push(`${xx};${yy}`);
-  });
-
+  
   const { up, down, left, right } = CONFIG.inputs;
 
-  let [xx, yy] = playerElement
-    .getAttribute('data-startat')
-    .split(';')
-    .map(coord => -(coord * gridSize));
-  
-  let lastPlayerPosition = [toGrid(-xx), toGrid(-yy)];
+  room.setAttribute('grid-size', mapData.cellSize * CONFIG.zoom);
+  if (CONFIG.debugMode) playerElement.style.border = '1px solid yellow';
 
-  const checkCollision = (direction) => {
-    let isBlocked = false;
-    let nextCell = `-1;-1`;
-    const limit = toGrid(gridSize * Math.sqrt(mapData.brush.length));
-    switch(direction){
-      case 'up':
-        nextCell = `${toGrid(-xx)};${toGrid(-yy)}`;
-        isBlocked = collisionMap.includes(nextCell);
-        isBlocked = isBlocked || toGrid(yy + gridSize) >= 0;
-        break;
-      case 'left':
-        nextCell = `${toGrid(-xx)};${toGrid(-yy)}`;
-        isBlocked = collisionMap.includes(nextCell);
-        isBlocked = isBlocked || toGrid(xx + gridSize) >= 0;
-        break;
-      case 'right':
-        nextCell = `${toGrid(-xx + gridSize)};${toGrid(-yy)}`;
-        isBlocked = collisionMap.includes(nextCell);
-        isBlocked = isBlocked || toGrid(xx) < -limit;
-        break; 
-      case 'down':
-        nextCell = `${toGrid(-xx)};${toGrid(-yy + gridSize)}`;
-        isBlocked = collisionMap.includes(nextCell);
-        isBlocked = isBlocked || toGrid(yy) < -limit;
-        break;
-    }
-    return isBlocked;    
-  }
-  
+  initializeViewPort({ room, playerElement });
+  initializeMapCollision(room);
+  movements.speed = CONFIG.walkSpeed;
+
   setInterval(() => {
-    room.style.left = `calc(50% + ${xx}px)`;
-    room.style.top = `calc(50% + ${yy}px)`;
-
-    // Compute movement
-    if(movement !== 'idle') sprite.classList.replace('idle', 'run');
-    else {
+    if (isOnTheGrid(room)) {
       sprite.classList.replace('run', 'idle');
       return;
     }
-    if (!checkCollision(movement)) {
-      const [lx, ly] = lastPlayerPosition;
-      const able = lx === toGrid(-xx) && ly === toGrid(-yy);
-      switch(movement) {
-        case 'down':
-          if (able) yy -= CONFIG.walkSpeed;
-          else {
-            movement = 'idle';
-          }
-          break;
-        case 'up':
-          if (able) yy += CONFIG.walkSpeed;
-          else {
-            movement = 'idle';
-          }
-          break;
-        case 'left':
-          if (able) xx += CONFIG.walkSpeed;
-          else {
-            movement = 'idle';
-          }
-          break;
-        case 'right':
-          if (able) xx -= CONFIG.walkSpeed;
-          else {
-            movement = 'idle';
-          }
-          break;
-      }
+    switch(cssToNumber(sprite.style.top)) {
+      case 0:
+        movements.down(room);
+        break;
+      case (-sprite.height * .25):
+        movements.right(room);
+        break;
+      case (-sprite.height * .5):
+        movements.up(room);
+        break;
+      case (-sprite.height * .75):
+        movements.left(room);
+        break;
     }
-
   }, 1000 / CONFIG.fps);
 
-  window.onkeydown = (ev) => {
-    const { key } = ev;
-    lastPlayerPosition = [toGrid(-xx), toGrid(-yy)];
+  window.onkeydown = ({ key }) => {
+    if (!isOnTheGrid(room)) return;
+    sprite.classList.replace('idle', 'run');
     switch (key) {
       case down:
-        movement = 'down';
-        sprite.style.top = '0';
+        sprite.style.top = '0px';
+        movements.down(room);
         break;
       case right:
-        movement = 'right';
         sprite.style.top = `${-sprite.height * .25}px`;
+        movements.right(room);
         break;
       case up:
-        movement = 'up';
         sprite.style.top = `${-sprite.height * .5}px`;
+        movements.up(room);
         break;
       case left:
-        movement = 'left';
         sprite.style.top = `${-sprite.height * .75}px`;
+        movements.left(room);
         break;
     }
   };

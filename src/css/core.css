@@ -12,19 +12,17 @@ body, #room {
   padding: 0;
 }
 
-#room {
-  position: absolute;
-}
-
-#player {
+#room, #player {
   position: absolute;
   top: calc(50% - calc(16px * var(--pixel-size)));
   left: calc(50% - calc(16px * var(--pixel-size)));
+}
+
+#player {
   z-index: 10;
 }
 
 .map-cell {
-  border: 1px solid gray;
   background-color: royalblue;
   height: calc(16px * var(--pixel-size));
   image-rendering: pixelated;
@@ -34,8 +32,8 @@ body, #room {
 }
 
 .animated-spritesheet {
-  width: 64px;
-  height: 64px;
+  min-width: 64px;
+  min-height: 64px;
   position: relative;
   overflow: hidden;
 }

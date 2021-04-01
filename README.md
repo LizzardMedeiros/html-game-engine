@@ -1,4 +1,4 @@
-# HTML-GameEngine
+# HTML - GameEngine
 ### Uma game engine completa baseada em CSS/HTML
 
 ---
@@ -19,11 +19,11 @@ Exemplo do código de implementação do tutorial:
   <!-- Estabelece mapa do jogo -->
   <div id="world" data-source="map00">
     <!-- Implementa o jogador -->
-    <div id="player" class="actor" data-startat="1;1">
+    <div id="player" class="actor" data-home="2;2">
       <div class="animated-spritesheet">
         <img
           class="spritesheet idle"
-          src="./src/img/DemoRpgCharacter.png"
+          src="./src/img/Man.png"
           alt="player"
         />
       </div>
@@ -39,6 +39,34 @@ Para especificar algumas propriedades básicas do game, como quadros por segundo
 ## Implementando Atores
 
 :warning: Em contrução :warning:
+
+### Player
+
+Assim como todos os atores, você pode implementar o player apenas editando os atributos do elemento player:
+
+``` html
+<div id="player" class="actor" data-home="2;2">
+  <div class="animated-spritesheet">
+    <img
+      class="spritesheet idle"
+      src="./src/img/Man.png"
+      alt="player"
+    />
+  </div>
+</div>
+```
+
+Sendo:
+
+> - **data-home** - As coordenadas onde o player iniciará no grid do mapa
+> - **data-attributes** - Em breve
+> - **data-inventory** - Em breve
+> - **data-skills** - Em breve
+> - **data-script** - Em breve
+
+Dica:
+
+##### :star: Você pode experimentar os vários exemplos de sprites presentes na pasta `/src/img`, ative o modo debug no `config.js` :star: 
 
 ## Contruindo mapas
 
@@ -69,6 +97,10 @@ Sendo:
 > - **cellSize** - O tamanho de cada célula do tileset em pixels
 > - **Brush** - Uma lista contendo as informações de cada célula a ser renderizada no mapa
 
+Dica:
+
+##### :star: Para facilitar a edição do mapa, ative o modo debug no `config.js` :star: 
+
 ### Implementando o mapa
 
 Após ter criado o seu mapa, para implementá-lo, basta colocar o nome do arquivo (sem a extensão) na propriedade `data-source` do elemento `world` da sua página HTML
@@ -76,7 +108,7 @@ Após ter criado o seu mapa, para implementá-lo, basta colocar o nome do arquiv
 ``` html
 <body>
   <!-- Estabelece mapa do jogo -->
-  <div id="world" data-source="{nome-do-mapa}">
+  <div id="world" data-source="{nome-do-arquivo}">
   ...
 ```
 

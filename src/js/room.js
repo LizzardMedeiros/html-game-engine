@@ -5,6 +5,7 @@ export default (CONFIGS) => (assets) => {
   const mapData = assets.maps[mapSource];
   const mapTexture = `./src/img/${mapData.tileset}`;
   const room = document.createElement('div');
+  const gridSize = CONFIGS.zoom * mapData.cellSize;
 
   room.id = 'room';
   world.appendChild(room);
@@ -16,18 +17,19 @@ export default (CONFIGS) => (assets) => {
     cellTexture.src = mapTexture;
     cellTexture.style.position = 'absolute';
     cellTexture.width *= CONFIGS.zoom;
-    cellTexture.style.left = `-${CONFIGS.zoom * mapData.cellSize * c[0]}px`;
-    cellTexture.style.top = `-${CONFIGS.zoom * mapData.cellSize * c[1]}px`;
+    cellTexture.style.left = `-${gridSize * c[0]}px`;
+    cellTexture.style.top = `-${gridSize * c[1]}px`;
     cellTexture.style.zIndex = c[2];
     cell.appendChild(cellTexture);
 
     // Cells
     cell.classList.add('map-cell');
+    if (CONFIGS.debugMode) cell.style.border = '1px solid gray';
     if (c[3] === CONFIGS.tilesetEventCode.collision) cell.classList.add('block');
     const xx = i % Math.sqrt(mapData.brush.length);
     const yy = Math.floor(i / Math.sqrt(mapData.brush.length));
-    cell.style.left = `${CONFIGS.zoom * mapData.cellSize * xx}px`;
-    cell.style.top = `${CONFIGS.zoom * mapData.cellSize * yy}px`;
+    cell.style.left = `${gridSize * xx}px`;
+    cell.style.top = `${gridSize * yy}px`;
     room.appendChild(cell);
   });
 
